@@ -8,16 +8,43 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure --disable-doc --enable-sse2 --enable-avx --enable-avx2 --enable-openmp --enable-shared --enable-amd-opt --enable-dynamic-dispatcher
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+
+    - name: Configure CMake
+      # -B build: Create a build directory named 'build'
+      # -A x64: Explicitly target 64-bit architecture
+      # We map your original autotools flags to the CMake options defined in your CMakeLists.txt
+      run: >
+        cmake -B build -A x64
+        -DCMAKE_BUILD_TYPE=Release
+        -DBUILD_SHARED_LIBS=ON
+        -DENABLE_SSE2=ON
+        -DENABLE_AVX=ON
+        -DENABLE_AVX2=ON
+        -DENABLE_AMD_OPT=ON
+
+    - name: Build
+      # Build the Release configuration
+      run: cmake --build build --config Release
+
+    - name: Run Tests
+      # Equivalent to 'make check'. 
+      # We specify the config because Windows generators are multi-configuration.
+      run: ctest --test-dir build -C Release --output-on-failure
+
+    - name: Install
+      # This step copies the artifacts to a specific staging folder ('install_dist').
+      # This ensures we get the correct DLLs (bin/) and import libs (lib/) 
+      # without hunting through the build tree.
+      run: cmake --install build --config Release --prefix install_dist
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: fftw-windows-release-x64
+        path: |
+          install_dist/bin/*.dll
+          install_dist/lib/*.lib
