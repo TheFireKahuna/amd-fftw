@@ -46,5 +46,6 @@ jobs:
       with:
         name: fftw-windows-release-x64
         path: |
-          install_dist/bin/*.dll
-          install_dist/lib/*.lib
+          install_dist/build/Release/*.dll
+          install_dist/build/Release/*.lib
+          install_dist/build/include/*
