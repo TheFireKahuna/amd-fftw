@@ -36,6 +36,6 @@ jobs:
       with:
         name: fftw-windows-release-x64
         path: |
-          build/bin/*.dll
-          build/lib/*.lib
+          build/Release/*.dll
+          build/Release/*.lib
           build/include/*
