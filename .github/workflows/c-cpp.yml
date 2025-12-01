@@ -27,6 +27,7 @@ jobs:
         -DENABLE_AVX2=ON
         -DENABLE_AMD_OPT=ON
         -DENABLE_THREADS=ON
+        -DWITH_COMBINED_THREADS=ON
 
     - name: Build
       # Build the Release configuration
