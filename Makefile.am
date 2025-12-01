@@ -156,19 +156,6 @@ FFTW3@PREC_SUFFIX@ConfigVersion.cmake: $(top_srcdir)/FFTW3ConfigVersion.cmake.in
 cmakedir = $(libdir)/cmake/fftw3
 cmake_DATA = FFTW3@PREC_SUFFIX@Config.cmake FFTW3@PREC_SUFFIX@ConfigVersion.cmake
 
-WISDOM_DIR = /etc/fftw
-WISDOM = wisdom@PREC_SUFFIX@
-
-WISDOM_TIME=12 # default to 12-hour limit, i.e. overnight
-WISDOM_FLAGS=--verbose --canonical --time-limit=$(WISDOM_TIME)
-
-wisdom:
-	tools/fftw@PREC_SUFFIX@-wisdom -o $@ $(WISDOM_FLAGS)
-
-install-wisdom: wisdom
-	$(mkinstalldirs) $(WISDOM_DIR)
-	$(INSTALL_DATA) wisdom $(WISDOM_DIR)/$(WISDOM)
-
 if MAINTAINER_MODE
 assert-shared-version-info:
 	current=`echo @SHARED_VERSION_INFO@ | cut -d: -f1`;	\

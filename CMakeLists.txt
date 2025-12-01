@@ -732,16 +732,6 @@ elseif(OPENMP_FOUND)
         set(LIBFFTWTHREADS libfftw3${PREC_SUFFIX}_omp)
 endif()
 
-set(fftw${PREC_SUFFIX}-wisdom_src tools/fftw-wisdom.c)
-
-add_executable(fftw${PREC_SUFFIX}-wisdom ${fftw${PREC_SUFFIX}-wisdom_src})
-target_link_libraries(fftw${PREC_SUFFIX}-wisdom libbench2  ${LIBFFTWTHREADS} ${lib_name} libtestbench)
-if (OPENMP_FOUND)
-    target_link_libraries(fftw${PREC_SUFFIX}-wisdom OpenMP::OpenMP_C)
-endif ()
-install(TARGETS fftw${PREC_SUFFIX}-wisdom ${INSTALL_TARGETS_DEFAULT_ARGS} DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-
 if (BUILD_TESTS)
   add_executable (bench tests/bench.c tests/hook.c tests/fftw-bench.c)
   target_link_libraries (bench libbench2)
