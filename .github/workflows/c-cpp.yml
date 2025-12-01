@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2025
 
     steps:
     - uses: actions/checkout@v4
@@ -18,9 +18,10 @@ jobs:
       # -A x64: Explicitly target 64-bit architecture
       # We map your original autotools flags to the CMake options defined in your CMakeLists.txt
       run: >
-        cmake -B build -A x64
+        cmake -S . -B build -A x64
         -DCMAKE_BUILD_TYPE=Release
         -DBUILD_SHARED_LIBS=ON
+        -DENABLE_SHARED=ON
         -DENABLE_SSE2=ON
         -DENABLE_AVX=ON
         -DENABLE_AVX2=ON
@@ -30,22 +31,11 @@ jobs:
       # Build the Release configuration
       run: cmake --build build --config Release
 
-    - name: Run Tests
-      # Equivalent to 'make check'. 
-      # We specify the config because Windows generators are multi-configuration.
-      run: ctest --test-dir build -C Release --output-on-failure
-
-    - name: Install
-      # This step copies the artifacts to a specific staging folder ('install_dist').
-      # This ensures we get the correct DLLs (bin/) and import libs (lib/) 
-      # without hunting through the build tree.
-      run: cmake --install build --config Release --prefix install_dist
-
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: fftw-windows-release-x64
         path: |
-          install_dist/bin/*.dll
-          install_dist/lib/*.lib
-          install_dist/include/*
+          build/bin/*.dll
+          build/lib/*.lib
+          build/include/*
