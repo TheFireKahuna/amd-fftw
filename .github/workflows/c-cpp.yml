@@ -9,34 +9,42 @@ on:
 jobs:
   build:
     runs-on: windows-2025
+    strategy:
+      matrix:
+        include:
+          - name: x64-avx2
+            arch: x64
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
+            artifact_name: fftw-windows-release-x64-avx2
+          - name: x64-avx512
+            arch: x64
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
+            artifact_name: fftw-windows-release-x64-avx512
+          - name: arm64
+            arch: arm64
+            cmake_flags: -DENABLE_NEON=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF
+            artifact_name: fftw-windows-release-arm64
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Configure CMake
-      # -B build: Create a build directory named 'build'
-      # -A x64: Explicitly target 64-bit architecture
-      # We map your original autotools flags to the CMake options defined in your CMakeLists.txt
+    - name: Configure CMake (${{ matrix.name }})
       run: >
-        cmake -S . -B build -A x64
+        cmake -B build -A ${{ matrix.arch }}
         -DCMAKE_BUILD_TYPE=Release
         -DBUILD_SHARED_LIBS=ON
         -DENABLE_SHARED=ON
-        -DENABLE_SSE2=ON
-        -DENABLE_AVX=ON
-        -DENABLE_AVX2=ON
-        -DENABLE_AMD_OPT=ON
         -DENABLE_THREADS=ON
         -DWITH_COMBINED_THREADS=ON
+        ${{ matrix.cmake_flags }}
 
-    - name: Build
-      # Build the Release configuration
+    - name: Build (${{ matrix.name }})
       run: cmake --build build --config Release
 
-    - name: Upload Artifacts
+    - name: Upload Artifacts (${{ matrix.name }})
       uses: actions/upload-artifact@v4
       with:
-        name: fftw-windows-release-x64
+        name: ${{ matrix.artifact_name }}
         path: |
           build/Release/*.dll
           build/Release/*.lib
