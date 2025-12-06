@@ -309,8 +309,8 @@ if(CMAKE_C_COMPILER_ID MATCHES MSVC)
     #by default when AVX2 is enabled for x64
     # set (FMA_FLAG /arch:FMA)
     # add_definitions(/arch:FMA)
-    # set(HAVE_FMA TRUE)
-    # message(STATUS "Enabling FMA instructions")
+    set(HAVE_FMA TRUE)
+    message(STATUS "Enabling FMA instructions")
   endif()
 
   if(ENABLE_AVX)
