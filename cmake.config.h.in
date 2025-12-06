@@ -80,6 +80,9 @@
 /* Define to enable AVX512 optimizations. */
 #cmakedefine HAVE_AVX512 1
 
+/* Define to enable AVX10 optimizations. */
+#cmakedefine HAVE_AVX10 1
+
 /* Define to enable 128-bit FMA AVX optimization */
 /* #undef HAVE_AVX_128_FMA */
 

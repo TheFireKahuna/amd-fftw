@@ -14,15 +14,19 @@ jobs:
         include:
           - name: x64-avx2
             arch: x64
-            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
             artifact_name: fftw-windows-release-x64-avx2
           - name: x64-avx512
             arch: x64
-            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_AVX10=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
             artifact_name: fftw-windows-release-x64-avx512
+          - name: x64-avx10
+            arch: x64
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=ON -DENABLE_NEON=OFF
+            artifact_name: fftw-windows-release-x64-avx10
           - name: arm64
             arch: arm64
-            cmake_flags: -DENABLE_NEON=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF
+            cmake_flags: -DENABLE_NEON=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
             artifact_name: fftw-windows-release-arm64
 
     steps:
