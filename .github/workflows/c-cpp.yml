@@ -16,18 +16,42 @@ jobs:
             arch: x64
             cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
             artifact_name: fftw-windows-release-x64-avx2
+            build_type: Release
+          - name: x64-avx2
+            arch: x64
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
+            artifact_name: fftw-windows-debug-x64-avx2
+            build_type: Debug
           - name: x64-avx512
             arch: x64
             cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_AVX10=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
             artifact_name: fftw-windows-release-x64-avx512
+            build_type: Release
+          - name: x64-avx512
+            arch: x64
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_AVX10=OFF -DENABLE_NEON=OFF -DENABLE_AMD_OPT=ON
+            artifact_name: fftw-windows-debug-x64-avx512
+            build_type: Debug
           - name: x64-avx10
             arch: x64
             cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=ON -DENABLE_NEON=OFF
             artifact_name: fftw-windows-release-x64-avx10
+            build_type: Release
+          - name: x64-avx10
+            arch: x64
+            cmake_flags: -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=ON -DENABLE_NEON=OFF
+            artifact_name: fftw-windows-debug-x64-avx10
+            build_type: Debug
           - name: arm64
             arch: arm64
             cmake_flags: -DENABLE_NEON=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
             artifact_name: fftw-windows-release-arm64
+            build_type: Release
+          - name: arm64
+            arch: arm64
+            cmake_flags: -DENABLE_NEON=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
+            artifact_name: fftw-windows-debug-arm64
+            build_type: Debug
 
     steps:
     - uses: actions/checkout@v4
@@ -35,7 +59,7 @@ jobs:
     - name: Configure CMake (${{ matrix.name }})
       run: >
         cmake -B build -A ${{ matrix.arch }}
-        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_SHARED_LIBS=ON
         -DENABLE_SHARED=ON
         -DENABLE_THREADS=ON
@@ -43,13 +67,14 @@ jobs:
         ${{ matrix.cmake_flags }}
 
     - name: Build (${{ matrix.name }})
-      run: cmake --build build --config Release
+      run: cmake --build build --config ${{ matrix.build_type }}
 
     - name: Upload Artifacts (${{ matrix.name }})
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
         path: |
-          build/Release/*.dll
-          build/Release/*.lib
+          build/${{ matrix.build_type }}/*.dll
+          build/${{ matrix.build_type }}/*.lib
+          build/${{ matrix.build_type }}/*.pdb
           build/include/*
