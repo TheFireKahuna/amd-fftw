@@ -76,8 +76,8 @@ endif()
 # Release mode setting for optimization flags in MSVC and Clang (in Debug mode optimization is disabled)
 if (CMAKE_C_COMPILER_ID MATCHES MSVC OR CMAKE_C_COMPILER_ID MATCHES Clang)
   if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /D_UNICODE /DUNICODE" CACHE STRING "" FORCE)
-    set(CMAKE_C_FLAGS_RELEASE "/O2 /DNDEBUG /D_UNICODE /DUNICODE" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /Zi /DNDEBUG /D_UNICODE /DUNICODE" CACHE STRING "" FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "/O2 /Zi /DNDEBUG /D_UNICODE /DUNICODE" CACHE STRING "" FORCE)
   endif()
 endif()
 
@@ -670,6 +670,7 @@ target_include_directories(${lib_name} PRIVATE ${CMAKE_SOURCE_DIR}/api)
 
 if (CMAKE_C_COMPILER_ID MATCHES MSVC)
   target_compile_definitions (${lib_name} PRIVATE /bigobj)
+  target_link_options (${lib_name} PUBLIC "/DEBUG:FULL")
 endif ()
 
 if (HAVE_SSE)
