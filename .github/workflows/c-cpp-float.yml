@@ -1,0 +1,50 @@
+name: Build Floats
+
+on:
+  push:
+    branches: [ ]
+  pull_request:
+    branches: [ ]
+
+jobs:
+  build:
+    runs-on: windows-2025
+    strategy:
+      matrix:
+        include:
+          - name: arm64
+            arch: arm64
+            cmake_flags: -DENABLE_NEON=ON -DENABLE_FLOAT=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
+            artifact_name: fftw-windows-release-arm64
+            build_type: Release
+          - name: arm64
+            arch: arm64
+            cmake_flags: -DENABLE_NEON=ON -DENABLE_FLOAT=ON -DENABLE_SSE2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
+            artifact_name: fftw-windows-debug-arm64
+            build_type: Debug
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure CMake (${{ matrix.name }})
+      run: >
+        cmake -B build -A ${{ matrix.arch }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=ON
+        -DENABLE_SHARED=ON
+        -DENABLE_THREADS=ON
+        -DWITH_COMBINED_THREADS=ON
+        ${{ matrix.cmake_flags }}
+
+    - name: Build (${{ matrix.name }})
+      run: cmake --build build --config ${{ matrix.build_type }}
+
+    - name: Upload Artifacts (${{ matrix.name }})
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: |
+          build/${{ matrix.build_type }}/*.dll
+          build/${{ matrix.build_type }}/*.lib
+          build/${{ matrix.build_type }}/*.pdb
+          build/include/*
