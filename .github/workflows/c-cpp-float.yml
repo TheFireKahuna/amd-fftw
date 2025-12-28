@@ -32,6 +32,26 @@ jobs:
             cmake_flags: -DENABLE_NEON=OFF -DENABLE_FLOAT=ON -DENABLE_SSE2=ON -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
             artifact_name: fftwf-windows-debug-x64
             build_type: Debug
+          - name: x64-release-avx2
+            arch: x64
+            cmake_flags: -DENABLE_NEON=OFF -DENABLE_FLOAT=ON -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
+            artifact_name: fftwf-windows-release-x64-avx2
+            build_type: Release
+          - name: x64-debug-avx2
+            arch: x64
+            cmake_flags: -DENABLE_NEON=OFF -DENABLE_FLOAT=ON -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=OFF -DENABLE_AVX10=OFF
+            artifact_name: fftwf-windows-debug-x64-avx2
+            build_type: Debug
+          - name: x64-release-avx512
+            arch: x64
+            cmake_flags: -DENABLE_NEON=OFF -DENABLE_FLOAT=ON -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_AVX10=OFF
+            artifact_name: fftwf-windows-release-x64-avx512
+            build_type: Release
+          - name: x64-debug-avx512
+            arch: x64
+            cmake_flags: -DENABLE_NEON=OFF -DENABLE_FLOAT=ON -DENABLE_SSE2=ON -DENABLE_AVX=ON -DENABLE_AVX2=ON -DENABLE_AVX512=ON -DENABLE_AVX10=OFF
+            artifact_name: fftwf-windows-debug-x64-avx512
+            build_type: Debug
 
     steps:
     - uses: actions/checkout@v4
